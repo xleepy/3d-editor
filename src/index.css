@@ -1,0 +1,19 @@
+
+.flex {
+  display: flex;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-half {
+  flex: 0.5
+}
+
+.position-right {
+  right: 0;
+  left: unset !important;
+}

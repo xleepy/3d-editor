@@ -1,60 +1,51 @@
-import { Canvas, ThreeElements, useFrame } from "@react-three/fiber";
-import { useState, useRef } from "react";
-import type {
-  BufferGeometry,
-  Material,
-  Mesh,
-  NormalBufferAttributes,
-  Object3DEventMap,
-} from "three";
+import { ReactNode, useState } from "react";
+import { Box, ColorNames } from "./lib/Box";
+import { Canvas } from "./lib/Canvas";
+import { Stats } from "@react-three/drei";
+import { ThreeElements } from "@react-three/fiber";
 
-const Box = (props: ThreeElements["mesh"]) => {
-  // This reference will give us direct access to the mesh
-  const meshRef = useRef<Mesh<
-    BufferGeometry<NormalBufferAttributes>,
-    Material | Material[],
-    Object3DEventMap
-  > | null>(null);
-  // Set up state for the hovered and active state
-  const [hovered, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((_, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta;
-    }
-  });
-  // Return view, these are regular three.js elements expressed in JSX
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={() => setActive(!active)}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={() => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
-    </mesh>
-  );
+const colorKeys = Object.keys(ColorNames);
+
+type EditorObjectProps = ThreeElements["mesh"] & {
+  color: keyof typeof ColorNames;
+};
+
+type EditorObject = {
+  component: (props: EditorObjectProps) => ReactNode;
+  props: EditorObjectProps;
 };
 
 function App() {
+  const [elements, setElements] = useState<EditorObject[]>([]);
   return (
-    <Canvas>
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight
-        position={[10, 10, 10]}
-        angle={0.15}
-        penumbra={1}
-        decay={0}
-        intensity={Math.PI}
-      />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
-    </Canvas>
+    <div className="flex flex-1">
+      <div className="flex-half">
+        <button
+          onClick={() =>
+            setElements((elems) => {
+              const randomColor = colorKeys[
+                Math.round(Math.random() * colorKeys.length - 1)
+              ] as keyof typeof ColorNames;
+              return [
+                ...elems,
+                { component: Box, props: { color: randomColor } },
+              ];
+            })
+          }
+        >
+          Create Box
+        </button>
+      </div>
+      <Canvas>
+        <ambientLight intensity={Math.PI / 2} />
+        {elements.map(({ component, props }, idx) => {
+          const Component = component;
+          return <Component key={idx} {...props} />;
+        })}
+        {/* <OrbitControls /> */}
+        <Stats className="position-right" />
+      </Canvas>
+    </div>
   );
 }
 
