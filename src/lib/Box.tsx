@@ -20,10 +20,11 @@ export const Box = ({
     },
   });
 
-  console.log("in component", color);
-
   return (
-    <mesh {...rest} {...bind()} position={position}>
+    // types mismatch between bind and mesh
+    // https://github.com/pmndrs/use-gesture/issues/374
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <mesh {...rest} {...(bind() as any)} position={position}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={color} />
     </mesh>
