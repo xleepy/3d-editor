@@ -3,10 +3,11 @@ import { Box, ColorNames } from "./lib/Box";
 import { Canvas } from "./lib/Canvas";
 import { Stats } from "@react-three/drei";
 import { ThreeElements } from "@react-three/fiber";
+import { ControlsProvider } from "./lib/Controls";
 
 const colorKeys = Object.keys(ColorNames);
 
-type EditorObjectProps = ThreeElements["mesh"] & {
+export type EditorObjectProps = ThreeElements["mesh"] & {
   color: keyof typeof ColorNames;
 };
 
@@ -37,12 +38,14 @@ function App() {
         </button>
       </div>
       <Canvas>
-        <ambientLight intensity={Math.PI / 2} />
-        {elements.map(({ component, props }, idx) => {
-          const Component = component;
-          return <Component key={idx} {...props} />;
-        })}
-        {/* <OrbitControls /> */}
+        <ControlsProvider>
+          <ambientLight intensity={Math.PI / 2} />
+          {elements.map(({ component, props }, idx) => {
+            const Component = component;
+            return <Component key={idx} {...props} />;
+          })}
+        </ControlsProvider>
+        <gridHelper />
         <Stats className="position-right" />
       </Canvas>
     </div>
