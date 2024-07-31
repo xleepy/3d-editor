@@ -1,7 +1,8 @@
-import { useGesture } from "react-use-gesture";
+import { useGesture } from "@use-gesture/react";
 import { ReactNode, useState } from "react";
-import { MeshProps, ThreeElements, useThree } from "@react-three/fiber";
+import { MeshProps, ThreeElements } from "@react-three/fiber";
 import { useControls } from "./Controls";
+import { Vector3, Plane } from "three";
 
 type Props = ThreeElements["mesh"] & {
   children: ReactNode;
@@ -10,15 +11,19 @@ type Props = ThreeElements["mesh"] & {
 export const DraggableMesh = ({ children, ...rest }: Props) => {
   const controls = useControls();
   const [position, setPosition] = useState<MeshProps["position"]>();
-  const { size, viewport } = useThree();
-  const aspect = size.width / viewport.width;
 
   const bind = useGesture({
-    onDrag: ({ offset: [x, y] }) => {
+    onDrag: ({ event }) => {
+      console.log(event);
+
       if (controls) {
         controls.enabled = false;
       }
-      setPosition([x / aspect, -y / aspect, 0]);
+      const floorPlane = new Plane(new Vector3(0, 1, 0), 0);
+      const planeIntersectPoint = new Vector3();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (event as any).ray.intersectPlane(floorPlane, planeIntersectPoint);
+      setPosition([planeIntersectPoint.x, 1.5, planeIntersectPoint.z]);
     },
     onDragEnd: () => {
       if (controls) {

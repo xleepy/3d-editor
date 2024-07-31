@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Box, ColorNames } from "./lib/Box";
 import { Canvas } from "./lib/Canvas";
-import { Stats } from "@react-three/drei";
+import { Grid, Stats } from "@react-three/drei";
 import { ThreeElements } from "@react-three/fiber";
 import { ControlsProvider } from "./lib/Controls";
 
@@ -45,7 +45,7 @@ function App() {
             return <Component key={idx} {...props} />;
           })}
         </ControlsProvider>
-        <gridHelper />
+        <Grid infiniteGrid />
         <Stats className="position-right" />
       </Canvas>
     </div>
