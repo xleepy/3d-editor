@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from "react";
 import { Box, ColorNames } from "./lib/Box";
-import { Grid, Stats } from "@react-three/drei";
+import { Stats } from "@react-three/drei";
 import { Canvas, ThreeElements } from "@react-three/fiber";
 import { ControlsProvider } from "./lib/Controls";
 import { BoxPreview } from "./lib/BoxPreview";

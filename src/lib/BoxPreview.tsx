@@ -18,7 +18,7 @@ export const BoxPreview = () => {
           event.dataTransfer.setData("color", randomColor);
         }}
       >
-        <PreviewRenderer>
+        <PreviewRenderer key={randomColor}>
           <Box
             draggable={false}
             color={randomColor}
